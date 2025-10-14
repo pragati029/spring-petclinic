@@ -1,9 +1,8 @@
-pipeline{
-    agent{
+pipeline {
+    agent {
         label "javaapp"  
     }
-}
-     stages {
+    stages {
         stage ('git checkout') {
             steps {
                 git url: 'https://github.com/pragati029/spring-petclinic.git',
@@ -11,8 +10,7 @@ pipeline{
             }
             
         }
-     }
-     stage ('build and scan') {
+        stage ('build and scan') {
             steps {
                 withCredentials ([string(credentialsId: 'sonar_id', variable: 'newtoken')]) {
                     withSonarQubeEnv('sonar') {
@@ -35,7 +33,7 @@ pipeline{
                         "files": [
                             {
                                 "pattern": "target/*.jar",
-                                "target": "jfrogjavaspc-libs-release/"
+                                "target": "jfrogjavaspc-libs-release-local"
                             }
                         ]
                     }'''
@@ -47,7 +45,7 @@ pipeline{
             }
         }
     }
-     post {
+    post {
         always {
             archiveArtifacts artifacts: 'target/*.jar'
             junit 'target/surefire-reports/*.xml'
