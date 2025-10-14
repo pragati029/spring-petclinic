@@ -25,11 +25,11 @@ pipeline {
                 }
             }
         }
-        stage ('Docker Build') {
-            steps {
-                sh 'docker build -t myimg:1.0 .'
-            }
-        }
+        // stage ('Docker Build') {
+        //     steps {
+        //         sh 'docker build -t myimg:1.0 .'
+        //     }
+        // }
         stage('Upload to JFrog') {
             steps {
                 rtUpload(
