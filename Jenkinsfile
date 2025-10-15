@@ -25,11 +25,6 @@ pipeline {
                 }
             }
         }
-        // stage ('Docker Build') {
-        //     steps {
-        //         sh 'docker build -t myimg:1.0 .'
-        //     }
-        // }
         stage('Upload to JFrog') {
             steps {
                 rtUpload(
@@ -47,6 +42,11 @@ pipeline {
                 rtPublishBuildInfo(
                     serverId: 'jfrog_java'
                 )
+            }
+        }
+        stage ('Docker Build') {
+            steps {
+                sh 'docker build -t myimg:1.0 .'
             }
         }
     }
