@@ -1,7 +1,7 @@
-FROM maven:3.9.11-eclipse-temurin-17-alpine AS build
+FROM maven:3.9.11-eclipse-temurin-17 AS build
 ADD . /app
 WORKDIR /app
-RUN mvn package
+RUN mvn clean package
 
 FROM eclipse-temurin:25_36-jre-noble AS runtime
 LABEL project="java_project"
