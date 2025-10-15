@@ -1,17 +1,18 @@
-FROM maven:3.9.11-eclipse-temurin-17 AS build
-ENV BUILD_ENV=DEV
+FROM maven:3.9.11-eclipse-temurin-17-alpine AS build
+ADD . /app
 WORKDIR /app
-ADD spring-petclinic ./spring-petclinic
-RUN mvn -f spring-petclinic/pom.xml package -DskipTests
+RUN mvn package
 
-FROM openjdk:17-jdk-alpine AS runtime
-ARG APP_USER=demouser
-ARG APP_DIR=/usr/share/demo
-ENV RUNTIME_ENV=PROD
-RUN adduser -D -h ${APP_DIR} -s /bin/bash ${APP_USER}
-USER ${APP_USER}
-WORKDIR ${APP_DIR}
-COPY --from=build /app/spring-petclinic/target/*.jar app.jar
+FROM eclipse-temurin:25_36-jre-noble AS runtime
+LABEL project="java_project"
+LABEL environment="prod"
+ENV JAVA_HOME=/usr/lib/jvm/openjdk-17-jdk-amd64
+ENV MAVEN_HOME=/jami/
+ARG myuser=devops
+ARG homedir=/usr/share/manoj
+RUN useradd -m -d ${homedir} -s /bin/sh ${myuser}
+USER ${myuser}
+COPY --from=build /app/target/*.jar /devops/kumar.jar
+WORKDIR /devops
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar"]
-CMD ["app.jar"]
+CMD ["java", "-jar", "kumar.jar"]
